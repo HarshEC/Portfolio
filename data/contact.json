@@ -1,0 +1,20 @@
+{
+  "email": "you@example.com",
+  "social": [
+    {
+      "platform": "youtube",
+      "url": "https://youtube.com/@yourchannel",
+      "label": "YouTube Channel"
+    },
+    {
+      "platform": "instagram",
+      "url": "https://instagram.com/yourhandle",
+      "label": "Instagram"
+    },
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/yourprofile",
+      "label": "LinkedIn"
+    }
+  ]
+}

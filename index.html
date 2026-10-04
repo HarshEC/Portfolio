@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Video Editor & Motion Designer Portfolio">
+  <title>Portfolio | Video Editor & Motion Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <section id="hero" class="hero">
+    <video id="hero-video" class="hero-video" autoplay muted loop playsinline poster="assets/images/hero-poster.jpg"></video>
+    <div class="hero-content">
+      <span class="hero-kicker">Independent creative studio</span>
+      <h1 data-bind="brand"></h1>
+      <p data-bind="tagline"></p>
+    </div>
+    <a class="scroll-cue" href="#about" aria-label="Scroll to about section"><span></span></a>
+  </section>
+
+  <section id="about" class="section">
+    <div class="container">
+      <header class="section-header">
+        <h2>About Me</h2>
+      </header>
+      <div class="about-grid">
+        <img data-bind="photo" alt="" class="about-photo">
+        <div class="about-text">
+          <h2 data-bind="name"></h2>
+          <p data-bind="experience"></p>
+          <div class="about-facts" aria-label="Experience details">
+            <div class="about-fact">
+              <span class="about-fact-label">Experience</span>
+              <strong data-bind="experience-years"></strong>
+            </div>
+            <div class="about-fact">
+              <span class="about-fact-label">Currently with</span>
+              <strong data-bind="current-agency"></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reels" class="section reels-section">
+    <div class="container">
+      <header class="section-header section-header--split">
+        <div>
+          <span class="section-index">01 — Short form</span>
+          <h2>Reels</h2>
+        </div>
+        <p>Quick cuts, clean pacing, and motion built to stop the scroll.</p>
+      </header>
+      <div class="reels-stage">
+        <div class="reels-meta"><span>Featured edit</span><span>00:30</span></div>
+        <video class="reel-video" src="assets/videos/showreel.mp4" autoplay muted loop playsinline controls aria-label="Featured reel"></video>
+        <div class="reels-mark" aria-hidden="true">R</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="section">
+    <div class="container">
+      <header class="section-header">
+        <h2>Services</h2>
+        <p>What I bring to your project</p>
+      </header>
+      <div class="services-grid" id="services-grid"></div>
+    </div>
+  </section>
+
+  <section id="projects" class="section">
+    <div class="container">
+      <header class="section-header">
+        <h2>Best Projects</h2>
+        <p>Selected work across different styles</p>
+      </header>
+      <nav class="project-tabs" id="project-tabs" role="tablist" aria-label="Project categories"></nav>
+      <div class="project-panels" id="project-panels"></div>
+    </div>
+  </section>
+
+  <section id="education" class="section">
+    <div class="container">
+      <header class="section-header">
+        <h2>Education</h2>
+      </header>
+      <div class="education-timeline" id="education-timeline"></div>
+    </div>
+  </section>
+
+  <footer id="contact" class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <a data-bind="email" class="contact-link" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <span></span>
+        </a>
+        <nav class="social-links" id="social-links" aria-label="Social links"></nav>
+       
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data-loader.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

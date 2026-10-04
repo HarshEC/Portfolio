@@ -1,0 +1,70 @@
+{
+  "categories": [
+    {
+      "id": "motion-graphics",
+      "title": "Motion Graphics",
+      "projects": [
+        {
+          "title": "Brand Identity Animation",
+          "videoSrc": "assets/videos/test.mp4",
+          "thumbnail": "assets/images/mg-brand.jpg",
+          "description": "Full brand identity system with animated logo, transitions, and social media templates."
+        },
+        {
+          "title": "Explainer Video Series",
+          "videoSrc": "assets/videos/mg-explainer.mp4",
+          "thumbnail": "assets/images/mg-explainer.jpg",
+          "description": "Series of 2-minute explainer videos for a SaaS product. Character animation + UI motion."
+        },
+        {
+          "title": "Title Sequence Design",
+          "videoSrc": "assets/videos/mg-titles.mp4",
+          "thumbnail": "assets/images/mg-titles.jpg",
+          "description": "Cinematic title sequence for indie feature film. 3D typography composited with live action."
+        } 
+      ]
+    },
+    {
+      "id": "editing-styles",
+      "title": "Editing Styles",
+      "projects": [
+        {
+          "title": "Documentary Short",
+          "videoSrc": "assets/videos/edit-doc.mp4",
+          "thumbnail": "assets/images/edit-doc.jpg",
+          "description": "15-min documentary on local artisans. Paced for emotional resonance, natural sound design."
+        },
+        {
+          "title": "Music Video Edit",
+          "videoSrc": "assets/videos/edit-music.mp4",
+          "thumbnail": "assets/images/edit-music.jpg",
+          "description": "Fast-paced music video with rhythmic cutting, color grading matched to track energy."
+        },
+        {
+          "title": "Commercial Spot",
+          "videoSrc": "assets/videos/edit-commercial.mp4",
+          "thumbnail": "assets/images/edit-commercial.jpg",
+          "description": "30-second brand commercial. Tight storytelling, product-focused, broadcast delivery specs."
+        }
+      ]
+    },
+    {
+      "id": "color-grading",
+      "title": "Color Grading",
+      "projects": [
+        {
+          "title": "Narrative Short Film",
+          "videoSrc": "assets/videos/grade-narrative.mp4",
+          "thumbnail": "assets/images/grade-narrative.jpg",
+          "description": "Cinematic grade for 20-min narrative. Teal-orange palette with film emulation LUT base."
+        },
+        {
+          "title": "Fashion Lookbook",
+          "videoSrc": "assets/videos/grade-fashion.mp4",
+          "thumbnail": "assets/images/grade-fashion.jpg",
+          "description": "High-key fashion grade. Clean skin tones, vibrant fabric colors, consistent across 50+ shots."
+        }
+      ]
+    }
+  ]
+}

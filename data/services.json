@@ -1,0 +1,34 @@
+{
+  "services": [
+    {
+      "title": "Motion Graphics",
+      "description": "Custom animations, logo reveals, lower thirds, transitions, and animated brand systems for video content.",
+      "icon": "⚡"
+    },
+    {
+      "title": "Video Editing",
+      "description": "Narrative editing for documentaries, commercials, music videos, and social content. Pacing, structure, storytelling.",
+      "icon": "✂️"
+    },
+    {
+      "title": "Color Grading",
+      "description": "Cinematic color grading, LUT creation, shot matching, HDR/SDR delivery. DaVinci Resolve workflow.",
+      "icon": "🎨"
+    },
+    {
+      "title": "Sound Design",
+      "description": "Audio cleanup, mixing, sound effects, music licensing, and immersive soundscapes for video projects.",
+      "icon": "🔊"
+    },
+    {
+      "title": "Social Media Content",
+      "description": "Short-form vertical videos optimized for Reels, TikTok, Shorts. Platform-specific pacing and formatting.",
+      "icon": "📱"
+    },
+    {
+      "title": "Post-Production Supervision",
+      "description": "End-to-end post workflow management: ingest, proxy, edit, VFX handoff, color, deliverables, QC.",
+      "icon": "🎬"
+    }
+  ]
+}

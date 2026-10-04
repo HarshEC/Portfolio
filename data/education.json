@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "degree": "Bachelor of Fine Arts in Digital Media",
+      "school": "University of Arts & Design",
+      "year": "2020",
+      "description": "Focus on video production, motion design, and interactive media. Senior thesis: experimental narrative short film."
+    },
+    {
+      "degree": "DaVinci Resolve Certified Colorist",
+      "school": "Blackmagic Design Training",
+      "year": "2021",
+      "description": "Advanced color grading workflows, HDR grading, color management, and delivery specifications."
+    },
+    {
+      "degree": "Adobe Certified Professional - After Effects",
+      "school": "Adobe",
+      "year": "2019",
+      "description": "Motion graphics, visual effects, expressions, and compositing workflows."
+    },
+    {
+      "degree": "Workshop: Commercial Directing",
+      "school": "Masterclass / Industry Workshop",
+      "year": "2022",
+      "description": "Pre-production to post: treatment writing, shot listing, working with agencies, and client management."
+    }
+  ]
+}
+
+
+
