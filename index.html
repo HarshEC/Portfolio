@@ -12,10 +12,124 @@
   <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
+
+  <nav class="hc-navbar">
+    <div class="hc-navbar-container">
+
+        <!-- Logo -->
+        <a href="index.html" class="hc-navbar-logo">
+            <img
+                src="assets/images/logo.png"
+                alt="EditVerse Creations Logo"
+            >
+            <span id="logo_name">EditVerse Creations</span>
+        </a>
+
+
+        <!-- Desktop Navigation -->
+        <div class="hc-navbar-links">
+
+            <a href="index.html" class="active">Home</a>
+
+            <a href="#about">About</a>
+
+            <a href="#reels">Show Reel</a>
+
+            <a href="#services">Services</a>
+
+            <a href="#projects">Projects</a>
+
+            <a href="#education">Education</a>
+
+            <a href="#contact">Contact</a>
+
+        </div>
+
+
+        <!-- Resume -->
+        <div class="hc-navbar-action">
+
+            <a
+                href="assets/updated%20cv.pdf"
+                class="hc-navbar-button"
+                target="_blank"
+            >
+                View Resume
+            </a>
+
+        </div>
+
+
+        <!-- Mobile Menu Button -->
+        <button
+            class="hc-navbar-menu-btn"
+            id="hcMenuBtn"
+            type="button"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </div>
+
+
+    <!-- Mobile Navigation -->
+    <div class="hc-navbar-mobile" id="hcMobileMenu">
+
+        <a href="index.html" class="active">
+            Home
+        </a>
+
+        <a href="#about">
+            About
+        </a>
+
+        <a href="#reels">
+            Show Reel
+        </a>
+
+        <a href="#services">
+            Services
+        </a>
+
+        <a href="#projects">
+            Projects
+        </a>
+
+        <a href="#education">
+            Education
+        </a>
+
+        <a href="#contact">
+            Contact
+        </a>
+
+        <!-- Mobile Resume -->
+        <a
+            href="assets/updated%20cv.pdf"
+            class="hc-navbar-mobile-button"
+            target="_blank"
+        >
+            View Resume
+        </a>
+
+    </div>
+</nav>
+
+<script>
+    const hcMenuBtn = document.getElementById("hcMenuBtn");
+    const hcMobileMenu = document.getElementById("hcMobileMenu");
+
+    hcMenuBtn.addEventListener("click", () => {
+        hcMobileMenu.classList.toggle("show");
+        hcMenuBtn.classList.toggle("open");
+    });
+</script>
   <section id="hero" class="hero">
     <video id="hero-video" class="hero-video" autoplay muted loop playsinline poster="assets/images/hero-poster.jpg"></video>
     <div class="hero-content">
-      <span class="hero-kicker">Independent creative studio</span>
+      <!-- <span class="hero-kicker">Independent creative studio</span> -->
       <h1 data-bind="brand"></h1>
       <p data-bind="tagline"></p>
     </div>
@@ -52,14 +166,14 @@
       <header class="section-header section-header--split">
         <div>
           <span class="section-index">01 — Short form</span>
-          <h2>Reels</h2>
+          <h2>Show Reel</h2>
         </div>
         <p>Quick cuts, clean pacing, and motion built to stop the scroll.</p>
       </header>
       <div class="reels-stage">
         <div class="reels-meta"><span>Featured edit</span><span>00:30</span></div>
-        <video class="reel-video" src="assets/videos/showreel.mp4" autoplay muted loop playsinline controls aria-label="Featured reel"></video>
-        <div class="reels-mark" aria-hidden="true">R</div>
+        <video class="reel-video" src="assets/videos/motion graphics.mp4" autoplay muted loop playsinline controls aria-label="Featured reel"></video>
+        <div class="reels-mark" aria-hidden="true"></div>
       </div>
     </div>
   </section>
@@ -105,7 +219,9 @@
           <span></span>
         </a>
         <nav class="social-links" id="social-links" aria-label="Social links"></nav>
-       
+       <small class="footer-year">
+        © <span id="year"></span> EditVerse Creations
+      </small>
       </div>
     </div>
   </footer>

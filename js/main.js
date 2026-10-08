@@ -19,6 +19,41 @@
       this.initSmoothScroll();
       this.initTabNavigation();
       this.initScrollProgress();
+      this.initReelFit();
+    },
+
+    // Edge case: prevent showreel cropping for any source aspect ratio
+    // (9:16 short-form, 1:1, 16:9). Uses `contain` in CSS + narrows the
+    // stage for portrait clips so the full frame fits without cover-crop.
+    initReelFit() {
+      const videos = document.querySelectorAll('.reel-video');
+      if (!videos.length) return;
+
+      const fit = (video) => {
+        const stage = video.closest('.reels-stage');
+        if (!stage) return;
+        const w = video.videoWidth || 0;
+        const h = video.videoHeight || 0;
+        stage.classList.remove('is-portrait', 'is-landscape', 'is-square', 'is-unknown');
+        if (!w || !h) {
+          stage.classList.add('is-unknown');
+          return;
+        }
+        const ratio = w / h;
+        if (ratio < 0.9) stage.classList.add('is-portrait');
+        else if (ratio > 1.1) stage.classList.add('is-landscape');
+        else stage.classList.add('is-square');
+      };
+
+      videos.forEach((video) => {
+        // Metadata may already be available from cache/preload.
+        if (video.readyState >= 1 && video.videoWidth) fit(video);
+        video.addEventListener('loadedmetadata', () => fit(video));
+        video.addEventListener('error', () => {
+          const stage = video.closest('.reels-stage');
+          if (stage) stage.classList.add('is-unknown');
+        }, { once: true });
+      });
     },
 
     initScrollReveal() {
