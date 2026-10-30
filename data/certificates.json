@@ -1,0 +1,20 @@
+{
+  "certificates": [
+    {
+      "id": "adobe-certified-professional",
+      "title": "Adobe Certified Professional - Video Design",
+      "issuer": "Adobe",
+      "year": "2024",
+      "image": "assets/images/adobe .png",
+      "description": "Validates expertise in Premiere Pro & After Effects for professional video editing, motion graphics, and post-production workflows."
+    },
+    {
+      "id": "hp-certified",
+      "title": "HP Certified Technical Specialist",
+      "issuer": "HP Inc.",
+      "year": "2023",
+      "image": "assets/images/hp.png",
+      "description": "Certified in HP workstation hardware optimization, color-critical display calibration, and ISV application performance tuning for creative pipelines."
+    }
+  ]
+}

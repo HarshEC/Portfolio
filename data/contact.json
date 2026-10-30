@@ -1,5 +1,7 @@
 {
   "email": "harshvardhan1482006@gmail.com",
+  "phone": "+91 92050 10640",
+  "phoneRaw": "919205010640",
   "social": [
     {
       "platform": "youtube",
@@ -17,9 +19,9 @@
       "label": "LinkedIn"
     },
     {
-      "platform": "Whatsapp",
-      "url": "9205010640",
-      "label": "Whatsapp"
+      "platform": "whatsapp",
+      "url": "https://wa.me/919205010640",
+      "label": "WhatsApp"
     }
   ]
 }

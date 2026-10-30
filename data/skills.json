@@ -1,0 +1,40 @@
+{
+  "skills": [
+    {
+      "id": "speed-ramping",
+      "title": "Speed Ramping & Time Remapping",
+      "videoSrc": "assets/videos/skills/speed ramp.mp4",
+      "description": "Seamless speed transitions: frame-blending, optical flow, variable velocity curves for dramatic emphasis and flow."
+    },
+    {
+      "id": "sound-design",
+      "title": "Sound Design & Audio Mixing",
+      "videoSrc": "assets/videos/skills/sound designing.mp4",
+      "description": "Layered soundscapes: Foley, ambience, risers, impacts, EQ/compression, loudness normalization for broadcast/web."
+    },
+    {
+      "id": "motion-tracking",
+      "title": "Motion Tracking & Camera Solve",
+      "videoSrc": "assets/videos/skills/motion tracking.mp4",
+      "description": "3D camera tracking, planar/object tracks, screen replacement, text pinning, lens distortion matching, stereo workflows."
+    },
+    {
+      "id": "masking-roto",
+      "title": "Masking & Rotoscoping",
+      "videoSrc": "assets/videos/skills/masking edit.mp4",
+      "description": "Precise roto: edge feathering, motion blur handling, hair/fine detail, stereo offset cleanup, automated feather propagation."
+    },
+    {
+      "id": "motion-graphics",
+      "title": "Motion Graphics & GFX Integration",
+      "videoSrc": "assets/videos/skills/graphics.mp4",
+      "description": "Procedural animation, kinetic type, shape-layer rigs, expression-driven templates, data-driven graphics, 3D integration."
+    },
+    {
+      "id": "color-correction",
+      "title": "Color Correction & Grading",
+      "videoSrc": "assets/videos/skills/basic color corrections.mp4",
+      "description": "Primary balance (lift/gamma/gain), parade/vectorscope workflow, skin-tone protection, Rec.709/HDR delivery, LUT creation."
+    }
+  ]
+}

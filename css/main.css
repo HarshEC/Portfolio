@@ -277,10 +277,35 @@ body {
   font-size: var(--text-base);
   overflow-x: hidden;
   background-image:
-    linear-gradient(rgba(201, 255, 59, .025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201, 255, 59, .025) 1px, transparent 1px),
-    radial-gradient(circle at 80% -10%, rgba(201, 255, 59, .13), transparent 30rem);
-  background-size: 3rem 3rem, 3rem 3rem, auto;
+    /* Subtle grid pattern */
+    linear-gradient(rgba(201, 255, 59, .02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 255, 59, .02) 1px, transparent 1px),
+    /* Animated gradient orbs */
+    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(201, 255, 59, 0.08), transparent 50%),
+    radial-gradient(ellipse 50% 60% at 80% 80%, rgba(0, 200, 255, 0.06), transparent 50%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(201, 255, 59, 0.04), transparent 60%);
+  background-size: 3rem 3rem, 3rem 3rem, auto, auto, auto;
+  background-attachment: fixed;
+  /* Animation for gradient orbs */
+  animation: gradientShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 
+      0 0, 0 0,
+      20% 20%, 80% 80%, 50% 50%;
+  }
+  50% {
+    background-position: 
+      0 0, 0 0,
+      30% 30%, 70% 70%, 55% 45%;
+  }
+  100% {
+    background-position: 
+      0 0, 0 0,
+      15% 15%, 85% 85%, 45% 55%;
+  }
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -403,8 +428,6 @@ button { font-family: inherit; background: none; border: none; cursor: pointer; 
 
 #about .section-header h2::before { content: 'Profile // 00'; }
 #services .section-header h2::before { content: 'Capabilities // 02'; }
-#projects .section-header h2::before { content: 'Selected work // 03'; }
-#education .section-header h2::before { content: 'Background // 04'; }
 
 .section-header p {
   color: var(--fg-secondary);
@@ -717,6 +740,21 @@ video {
     white-space: nowrap;
   }
 
+  /* ---------- SKILLS ---------- */
+
+  .skill-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+  }
+
+  .skill-tabs button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
 
   /* ---------- EDUCATION ---------- */
 
@@ -754,7 +792,7 @@ video {
     background-size:
       2rem 2rem,
       2rem 2rem,
-      auto;
+      auto, auto, auto;
   }
 
 
@@ -1010,6 +1048,36 @@ video {
   }
 
   .project-panels {
+    width: 100%;
+  }
+
+
+  /* ---------- SKILLS ---------- */
+
+  .skill-tabs {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    padding: 4px 0 12px;
+    margin-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .skill-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .skill-tabs button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 42px;
+  }
+
+  .skill-panels {
     width: 100%;
   }
 
