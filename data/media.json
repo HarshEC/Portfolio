@@ -1,0 +1,132 @@
+{
+    "assets/videos/animation.mp4":  {
+                                        "poster":  "assets/posters/animation.jpg",
+                                        "width":  720,
+                                        "height":  1280
+                                    },
+    "assets/videos/logo animation.mp4":  {
+                                             "poster":  "assets/posters/logo animation.jpg",
+                                             "width":  1920,
+                                             "height":  1080
+                                         },
+    "assets/videos/ministry (2).mp4":  {
+                                           "poster":  "assets/posters/ministry (2).jpg",
+                                           "width":  1080,
+                                           "height":  1920
+                                       },
+    "assets/videos/ministry.mp4":  {
+                                       "poster":  "assets/posters/ministry.jpg",
+                                       "width":  2160,
+                                       "height":  3840
+                                   },
+    "assets/videos/motion graphics (2).mp4":  {
+                                                  "poster":  "assets/posters/motion graphics (2).jpg",
+                                                  "width":  2160,
+                                                  "height":  2160
+                                              },
+    "assets/videos/motion graphics.mp4":  {
+                                              "poster":  "assets/posters/motion graphics.jpg",
+                                              "width":  1920,
+                                              "height":  1080
+                                          },
+    "assets/videos/real estate (2).mp4":  {
+                                              "poster":  "assets/posters/real estate (2).jpg",
+                                              "width":  2160,
+                                              "height":  3840
+                                          },
+    "assets/videos/real estate (3).mp4":  {
+                                              "poster":  "assets/posters/real estate (3).jpg",
+                                              "width":  2160,
+                                              "height":  3840
+                                          },
+    "assets/videos/real estate.mp4":  {
+                                          "poster":  "assets/posters/real estate.jpg",
+                                          "width":  1080,
+                                          "height":  1920
+                                      },
+    "assets/videos/realeastet.mp4":  {
+                                         "poster":  "assets/posters/realeastet.jpg",
+                                         "width":  1080,
+                                         "height":  1920
+                                     },
+    "assets/videos/social media (2).mp4":  {
+                                               "poster":  "assets/posters/social media (2).jpg",
+                                               "width":  2160,
+                                               "height":  3840
+                                           },
+    "assets/videos/social media.mp4":  {
+                                           "poster":  "assets/posters/social media.jpg",
+                                           "width":  1080,
+                                           "height":  1920
+                                       },
+    "assets/videos/storytelling (2).mp4":  {
+                                               "poster":  "assets/posters/storytelling (2).jpg",
+                                               "width":  1920,
+                                               "height":  1080
+                                           },
+    "assets/videos/storytelling (3).mp4":  {
+                                               "poster":  "assets/posters/storytelling (3).jpg",
+                                               "width":  3840,
+                                               "height":  2160
+                                           },
+    "assets/videos/storytelling.mp4":  {
+                                           "poster":  "assets/posters/storytelling.jpg",
+                                           "width":  3840,
+                                           "height":  2160
+                                       },
+    "assets/videos/taalking head.mp4":  {
+                                            "poster":  "assets/posters/taalking head.jpg",
+                                            "width":  2160,
+                                            "height":  3840
+                                        },
+    "assets/videos/talking head educational.mp4":  {
+                                                       "poster":  "assets/posters/talking head educational.jpg",
+                                                       "width":  2160,
+                                                       "height":  3840
+                                                   },
+    "assets/videos/talking head.mp4":  {
+                                           "poster":  "assets/posters/talking head.jpg",
+                                           "width":  2160,
+                                           "height":  3840
+                                       },
+    "assets/videos/trailer edit.mp4":  {
+                                           "poster":  "assets/posters/trailer edit.jpg",
+                                           "width":  1920,
+                                           "height":  1080
+                                       },
+    "assets/videos/trailer.mp4":  {
+                                      "poster":  "assets/posters/trailer.jpg",
+                                      "width":  3840,
+                                      "height":  2160
+                                  },
+    "assets/videos/skills/basic color corrections.mp4":  {
+                                                             "poster":  "assets/posters/skills/basic color corrections.jpg",
+                                                             "width":  3840,
+                                                             "height":  2160
+                                                         },
+    "assets/videos/skills/graphics.mp4":  {
+                                              "poster":  "assets/posters/skills/graphics.jpg",
+                                              "width":  1920,
+                                              "height":  1032
+                                          },
+    "assets/videos/skills/masking edit.mp4":  {
+                                                  "poster":  "assets/posters/skills/masking edit.jpg",
+                                                  "width":  1920,
+                                                  "height":  1080
+                                              },
+    "assets/videos/skills/motion tracking.mp4":  {
+                                                     "poster":  "assets/posters/skills/motion tracking.jpg",
+                                                     "width":  3840,
+                                                     "height":  2160
+                                                 },
+    "assets/videos/skills/sound designing.mp4":  {
+                                                     "poster":  "assets/posters/skills/sound designing.jpg",
+                                                     "width":  1920,
+                                                     "height":  1032
+                                                 },
+    "assets/videos/skills/speed ramp.mp4":  {
+                                                "poster":  "assets/posters/skills/speed ramp.jpg",
+                                                "width":  1920,
+                                                "height":  1080
+                                            }
+}

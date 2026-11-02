@@ -4,18 +4,45 @@
   const DataLoader = {
     async loadAll() {
       try {
-        const [bio, projects, skills, certificates, contact] = await Promise.all([
+        const [bio, projects, skills, certificates, contact, media] = await Promise.all([
           fetch('data/bio.json').then(r => r.json()),
           fetch('data/projects.json').then(r => r.json()),
           fetch('data/skills.json').then(r => r.json()),
           fetch('data/certificates.json').then(r => r.json()),
-          fetch('data/contact.json').then(r => r.json())
+          fetch('data/contact.json').then(r => r.json()),
+          // Optional: poster/dimension map. Missing file must not break the site.
+          fetch('data/media.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))
         ]);
+        this.media = media || {};
         return { bio, projects, skills, certificates, contact };
       } catch (err) {
         console.error('Failed to load data:', err);
         return null;
       }
+    },
+
+    mediaInfo(videoSrc) {
+      return (this.media && this.media[videoSrc]) || null;
+    },
+
+    // Posters live beside the videos in assets/posters, mirroring the tree.
+    posterFor(videoSrc) {
+      const info = this.mediaInfo(videoSrc);
+      if (info && info.poster) return info.poster;
+      return videoSrc
+        .replace(/^assets\/videos\//, 'assets/posters/')
+        .replace(/\.(mp4|mov|webm|m4v)$/i, '.jpg');
+    },
+
+    // A static poster keeps the page light: no video bytes are fetched until
+    // the visitor actually clicks a card. Explicit width/height avoids layout
+    // shift because the browser reserves space before the image arrives.
+    createPoster(videoSrc, alt, className) {
+      const info = this.mediaInfo(videoSrc);
+      const size = info && info.width && info.height
+        ? ` width="${info.width}" height="${info.height}"`
+        : '';
+      return `<img class="${className}" src="${this.posterFor(videoSrc)}" alt="${alt}"${size} loading="lazy" decoding="async">`;
     },
 
     renderBio(data) {
@@ -35,7 +62,19 @@
         source.src = heroVideo;
         source.type = heroVideo.endsWith('.mov') ? 'video/quicktime' : 'video/mp4';
         heroVideoEl.appendChild(source);
-        heroVideoEl.load();
+
+        // Load the hero reel only after the page has painted, so it never
+        // competes with the first render / LCP image for bandwidth.
+        const startHero = () => {
+          heroVideoEl.load();
+          const play = heroVideoEl.play();
+          if (play && play.catch) play.catch(() => {});
+        };
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(startHero, { timeout: 1500 });
+        } else {
+          window.setTimeout(startHero, 600);
+        }
       }
     },
 
@@ -86,13 +125,12 @@
     },
 
     createSkillCard(s) {
-      // Use the video itself as its own "poster" — browser shows first frame.
-      // muted + playsinline + preload="metadata" lets the browser decode the first frame
-      // without autoplaying. User clicks to play (loadSkillVideoEmbed swaps in the full player).
+      // Static poster by default — the video itself is only mounted on click.
+      // This is what keeps ~1.4 GB of source footage off the initial load.
       return `
-        <article class="skill-card reveal" data-video-src="${s.videoSrc}">
+        <article class="skill-card reveal" data-video-src="${s.videoSrc}" tabindex="0" role="button" aria-label="Play ${s.title}">
           <div class="skill-thumb">
-            <video class="skill-preview" src="${s.videoSrc}" muted playsinline preload="metadata" aria-hidden="true"></video>
+            ${this.createPoster(s.videoSrc, s.title, 'skill-poster')}
             <div class="skill-play" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
@@ -107,35 +145,65 @@
 
     bindSkillCards() {
       document.querySelectorAll('.skill-card').forEach(card => {
-        card.addEventListener('click', () => {
+        const activate = () => {
           const videoSrc = card.dataset.videoSrc;
           if (videoSrc && !card.dataset.loaded) {
             this.loadSkillVideoEmbed(card, videoSrc);
           }
-        }, { once: true });
+        };
+        card.addEventListener('click', activate, { once: true });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activate();
+          }
+        });
       });
     },
 
-    loadSkillVideoEmbed(card, videoSrc) {
-      // Pause ALL videos (projects + skills) before starting this one
+    // Replaces a card's poster with a real player. Called only on click, so the
+    // heavy video request starts exactly when the visitor asks for it.
+    mountVideo(card, videoSrc, { thumbSelector, videoClass, title }) {
       this.pauseAllVideos(card);
-      
-      const thumb = card.querySelector('.skill-thumb');
-      // Replace the preview video with the full player
+
+      const thumb = card.querySelector(thumbSelector);
+      if (!thumb) return;
+
       thumb.innerHTML = '';
       const video = document.createElement('video');
-      video.className = 'skill-embed';
+      video.className = videoClass;
       video.src = videoSrc;
+      video.poster = this.posterFor(videoSrc);
+      const info = this.mediaInfo(videoSrc);
+      if (info && info.width && info.height) {
+        // Reserve the exact aspect ratio before metadata loads.
+        video.width = info.width;
+        video.height = info.height;
+      }
       video.controls = true;
       video.autoplay = true;
       video.playsInline = true;
+      video.preload = 'auto';
+      video.setAttribute('aria-label', title || 'Video player');
       thumb.appendChild(video);
       card.dataset.loaded = 'true';
+      card.classList.remove('is-loading');
 
-      // Register with scroll auto-play observer
+      const playPromise = video.play();
+      if (playPromise && playPromise.catch) playPromise.catch(() => {});
+
       if (window.VideoScrollPlay && window.VideoScrollPlay.observeVideo) {
         window.VideoScrollPlay.observeVideo(video);
       }
+    },
+
+    loadSkillVideoEmbed(card, videoSrc) {
+      card.classList.add('is-loading');
+      this.mountVideo(card, videoSrc, {
+        thumbSelector: '.skill-thumb',
+        videoClass: 'skill-embed',
+        title: card.querySelector('h3') && card.querySelector('h3').textContent
+      });
     },
 
     // Shared pause logic for both projects and skills
@@ -227,9 +295,9 @@
 
     createProjectCard(p) {
       return `
-        <article class="project-card reveal" data-video-src="${p.videoSrc}">
+        <article class="project-card reveal" data-video-src="${p.videoSrc}" tabindex="0" role="button" aria-label="Play ${p.title}">
           <div class="project-thumb">
-            <video class="project-preview" src="${p.videoSrc}" muted playsinline preload="metadata" aria-hidden="true"></video>
+            ${this.createPoster(p.videoSrc, p.title, 'project-poster')}
             <div class="project-play" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
@@ -244,33 +312,29 @@
 
     bindProjectCards() {
       document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('click', () => {
+        const activate = () => {
           const videoSrc = card.dataset.videoSrc;
           if (videoSrc && !card.dataset.loaded) {
             this.loadVideoEmbed(card, videoSrc);
           }
-        }, { once: true });
+        };
+        card.addEventListener('click', activate, { once: true });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activate();
+          }
+        });
       });
     },
 
     loadVideoEmbed(card, videoSrc) {
-      this.pauseAllVideos(card);
-      
-      const thumb = card.querySelector('.project-thumb');
-      thumb.innerHTML = '';
-      const video = document.createElement('video');
-      video.className = 'project-embed';
-      video.src = videoSrc;
-      video.controls = true;
-      video.autoplay = true;
-      video.playsInline = true;
-      thumb.appendChild(video);
-      card.dataset.loaded = 'true';
-
-      // Register with scroll auto-play observer
-      if (window.VideoScrollPlay && window.VideoScrollPlay.observeVideo) {
-        window.VideoScrollPlay.observeVideo(video);
-      }
+      card.classList.add('is-loading');
+      this.mountVideo(card, videoSrc, {
+        thumbSelector: '.project-thumb',
+        videoClass: 'project-embed',
+        title: card.querySelector('h3') && card.querySelector('h3').textContent
+      });
     },
 
     // Updated to pause both project and skill videos
@@ -300,7 +364,7 @@
       grid.innerHTML = data.certificates.map(cert => `
         <article class="certificate-card reveal">
           <div class="certificate-image">
-            <img src="${cert.image}" alt="${cert.title}" loading="lazy">
+            <img src="${cert.image}" alt="${cert.title}" loading="lazy" decoding="async">
           </div>
           <div class="certificate-info">
             <div class="certificate-meta">

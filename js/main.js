@@ -19,8 +19,34 @@
       this.initSmoothScroll();
       this.initTabNavigation();
       this.initScrollProgress();
+      this.initReelMedia();
       this.initReelFit();
       this.initVideoScrollPlay();
+    },
+
+    // Apply the poster + intrinsic size to the showreel before any video bytes
+    // are fetched. Width/height reserve the correct box so nothing jumps.
+    initReelMedia() {
+      const video = document.querySelector('.reel-video');
+      if (!video) return;
+      const src = video.getAttribute('src');
+      if (!src) return;
+
+      const info = DataLoader.mediaInfo(src);
+      if (info) {
+        video.poster = DataLoader.posterFor(src);
+        if (info.width && info.height) {
+          video.width = info.width;
+          video.height = info.height;
+        }
+      }
+
+      const stage = video.closest('.reels-stage');
+      if (stage && info && info.width && info.height) {
+        const ratio = info.width / info.height;
+        stage.classList.remove('is-portrait', 'is-landscape', 'is-square', 'is-unknown');
+        stage.classList.add(ratio < 0.9 ? 'is-portrait' : ratio > 1.1 ? 'is-landscape' : 'is-square');
+      }
     },
 
     // Edge case: prevent showreel cropping for any source aspect ratio
@@ -33,8 +59,8 @@
       const fit = (video) => {
         const stage = video.closest('.reels-stage');
         if (!stage) return;
-        const w = video.videoWidth || 0;
-        const h = video.videoHeight || 0;
+        const w = video.videoWidth || video.width || 0;
+        const h = video.videoHeight || video.height || 0;
         stage.classList.remove('is-portrait', 'is-landscape', 'is-square', 'is-unknown');
         if (!w || !h) {
           stage.classList.add('is-unknown');
@@ -47,8 +73,9 @@
       };
 
       videos.forEach((video) => {
-        // Metadata may already be available from cache/preload.
-        if (video.readyState >= 1 && video.videoWidth) fit(video);
+        // Metadata may already be available from cache/preload. The poster's
+        // width/height attributes are a safe fallback before metadata arrives.
+        fit(video);
         video.addEventListener('loadedmetadata', () => fit(video));
         video.addEventListener('error', () => {
           const stage = video.closest('.reels-stage');
@@ -142,100 +169,54 @@
       updateProgress();
     },
 
-    // Auto-play/pause videos based on scroll visibility
+    // Auto-play/pause videos based on scroll visibility.
+    // Only hero + showreel exist on first load. Clicked project/skill players
+    // register themselves later through window.VideoScrollPlay.
     initVideoScrollPlay() {
-      // Select all video elements that should auto-play on scroll
-      const videoSelectors = [
-        '#hero-video',           // Hero background video
-        '.reel-video',           // Showreel video
-        '.project-preview',      // Project preview videos (before click)
-        '.project-embed',        // Project embedded videos (after click)
-        '.skill-preview',        // Skill preview videos (before click)
-        '.skill-embed'           // Skill embedded videos (after click)
-      ];
-
-      const videos = document.querySelectorAll(videoSelectors.join(', '));
+      const videos = document.querySelectorAll('#hero-video, .reel-video');
       if (!videos.length) return;
-
-      // Track which videos have been user-interacted with
-      const userInteracted = new WeakSet();
-
-      // Mark video as user-interacted when they manually play/pause
-      videos.forEach(video => {
-        video.addEventListener('play', () => {
-          if (!video.hasAttribute('data-autoplay')) {
-            userInteracted.add(video);
-          }
-        }, { passive: true });
-        video.addEventListener('pause', () => {
-          userInteracted.add(video);
-        }, { passive: true });
-      });
 
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           const video = entry.target;
-          const isVisible = entry.isIntersecting;
-          const intersectionRatio = entry.intersectionRatio;
-
-          // Only auto-play if at least 50% visible
-          const shouldPlay = isVisible && intersectionRatio >= 0.5;
+          const shouldPlay = entry.isIntersecting && entry.intersectionRatio >= 0.4;
 
           if (shouldPlay) {
-            // Don't auto-play if user has manually interacted with this video
-            if (userInteracted.has(video)) return;
-
-            // Pause other auto-playing videos (enforce one at a time)
-            videos.forEach(otherVideo => {
-              if (otherVideo !== video && !userInteracted.has(otherVideo)) {
-                otherVideo.pause();
-                otherVideo.currentTime = 0;
+            // Keep decoding to one video at a time. Pause any other autoplay
+            // video, but never touch a player the visitor controls manually.
+            document.querySelectorAll('video').forEach(other => {
+              if (other !== video && !other.paused && !other.controls) {
+                other.pause();
               }
             });
-
-            // Play this video
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-              playPromise.catch(() => {
-                // Autoplay was prevented (e.g., browser policy), mark as interacted
-                userInteracted.add(video);
-              });
+            if (video.paused) {
+              const playPromise = video.play();
+              if (playPromise && playPromise.catch) playPromise.catch(() => {});
             }
-            video.setAttribute('data-autoplay', 'true');
-          } else {
-            // Pause when not sufficiently visible
-            if (!video.paused && video.hasAttribute('data-autoplay')) {
-              video.pause();
-              video.currentTime = 0;
-            }
-            video.removeAttribute('data-autoplay');
+          } else if (!video.paused && !video.controls) {
+            // Leaving the viewport: stop decoding, keep the position.
+            video.pause();
+          } else if (!entry.isIntersecting && !video.paused) {
+            // Offscreen user-controlled player: pause (preserve position).
+            video.pause();
           }
         });
       }, {
-        rootMargin: '0px',
-        threshold: [0, 0.25, 0.5, 0.75, 1.0]
+        rootMargin: '100px 0px',
+        threshold: [0, 0.4, 0.75]
       });
 
       const observeVideo = (video) => {
-        // Ensure video is muted for autoplay to work
-        video.muted = true;
-        video.playsInline = true;
-        // Add interaction listeners
-        video.addEventListener('play', () => {
-          if (!video.hasAttribute('data-autoplay')) {
-            userInteracted.add(video);
-          }
-        }, { passive: true });
-        video.addEventListener('pause', () => {
-          userInteracted.add(video);
-        }, { passive: true });
+        if (!video.controls) {
+          video.muted = true;
+          video.playsInline = true;
+        }
         observer.observe(video);
       };
 
-      // Observe initial videos
       videos.forEach(observeVideo);
 
-      // Expose for dynamically added videos
+      // Expose for dynamically added videos (project/skill cards on click).
       window.VideoScrollPlay = { observeVideo, observer };
     }
   };

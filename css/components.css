@@ -232,7 +232,6 @@
   object-fit: contain;
   object-position: center;
   background: #000;
-  filter: saturate(.9) contrast(1.04);
 }
 
 /* Edge case: adapt stage width to the video's intrinsic orientation
@@ -424,6 +423,17 @@
   height: auto;
   display: block;
   object-fit: contain;
+  object-position: center;
+  background: #000;
+}
+
+/* Static poster shown until the visitor clicks. No video request is made. */
+.project-poster,
+.skill-poster {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
   object-position: center;
   background: #000;
 }
@@ -885,10 +895,8 @@
   .certificate-info h3 {
     font-size: var(--text-lg);
   }
-  }
-}
 
-.education-timeline { padding-left: var(--space-md); }
+  .education-timeline { padding-left: var(--space-md); }
   .scroll-cue { bottom: 1.25rem; }
   .about-photo { width: 220px; height: 220px; }
   .about-facts { grid-template-columns: 1fr; }
@@ -904,4 +912,22 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero::before, .scroll-cue span { animation: none; }
+}
+
+/* Keyboard focus for the clickable video cards. */
+.project-card:focus-visible,
+.skill-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Touch devices have no hover: always show the play affordance. */
+@media (hover: none), (pointer: coarse) {
+  .project-play,
+  .skill-play {
+    opacity: 1;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, .55), rgba(0, 0, 0, .12) 48%, transparent 72%);
+  }
+  .project-play svg,
+  .skill-play svg { width: 54px; height: 54px; }
 }

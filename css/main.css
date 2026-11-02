@@ -2,7 +2,9 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  /* No scroll-snap: with lazy media and long sections, proximity/mandatory
+     snapping makes the page jump to section starts while content loads. */
+  scroll-snap-type: none;
   scroll-padding-top: 2rem;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -280,32 +282,12 @@ body {
     /* Subtle grid pattern */
     linear-gradient(rgba(201, 255, 59, .02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(201, 255, 59, .02) 1px, transparent 1px),
-    /* Animated gradient orbs */
-    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(201, 255, 59, 0.08), transparent 50%),
-    radial-gradient(ellipse 50% 60% at 80% 80%, rgba(0, 200, 255, 0.06), transparent 50%),
+    /* Static gradient orbs (animating background-position + fixed
+       attachment forced a full-page repaint on every frame) */
+    radial-gradient(ellipse 60% 50% at 22% 24%, rgba(201, 255, 59, 0.08), transparent 50%),
+    radial-gradient(ellipse 50% 60% at 78% 76%, rgba(0, 200, 255, 0.06), transparent 50%),
     radial-gradient(ellipse 40% 40% at 50% 50%, rgba(201, 255, 59, 0.04), transparent 60%);
   background-size: 3rem 3rem, 3rem 3rem, auto, auto, auto;
-  background-attachment: fixed;
-  /* Animation for gradient orbs */
-  animation: gradientShift 20s ease-in-out infinite alternate;
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 
-      0 0, 0 0,
-      20% 20%, 80% 80%, 50% 50%;
-  }
-  50% {
-    background-position: 
-      0 0, 0 0,
-      30% 30%, 70% 70%, 55% 45%;
-  }
-  100% {
-    background-position: 
-      0 0, 0 0,
-      15% 15%, 85% 85%, 45% 55%;
-  }
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -335,9 +317,8 @@ button { font-family: inherit; background: none; border: none; cursor: pointer; 
     object-fit: cover;
     object-position: center;
 
-    filter: blur(3px);
-
-    /* scale past 100% so the blur's transparent rim never shows an edge */
+    /* No blur filter: filtering a playing video is one of the most expensive
+       things a browser can do per frame. The overlay gradient does the job. */
     transform: scale(1.06);
 
     z-index: 0;
@@ -356,20 +337,16 @@ button { font-family: inherit; background: none; border: none; cursor: pointer; 
 
         object-fit: cover;
         object-position: center;
-        filter: blur(2px);
     }
 }
 
 .section {
   padding: var(--space-xl) 0;
   position: relative;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-.hero, .footer {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  /* Skip layout/paint work for sections far below the viewport. This is a
+     major smoothness win on a page with dozens of video cards. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
 }
 
 .section:nth-of-type(even)::before {
@@ -799,9 +776,7 @@ video {
   /* ---------- NAVBAR ---------- */
 
   .hc-navbar {
-    background: rgba(0, 0, 0, 0.96);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: #000000;
   }
 
   .hc-navbar-container {
@@ -868,7 +843,6 @@ video {
     min-height: 100%;
     object-fit: cover;
     object-position: center;
-    filter: blur(2px);
     transform: scale(1.06);
   }
 
@@ -901,8 +875,6 @@ video {
   .section {
     min-height: auto;
     padding: 64px 0;
-    scroll-snap-align: none;
-    scroll-snap-stop: normal;
   }
 
   .container {

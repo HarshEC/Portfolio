@@ -7,6 +7,7 @@
   <title>Portfolio | Video Editor & Motion Designer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="assets/images/hero-poster.jpg" fetchpriority="high">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/components.css">
@@ -21,6 +22,9 @@
             <img
                 src="assets/images/logo.png"
                 alt="EditVerse Creations Logo"
+                width="256"
+                height="256"
+                decoding="async"
             >
             <span id="logo_name">EditVerse Creations</span>
         </a>
@@ -126,8 +130,9 @@
         hcMenuBtn.classList.toggle("open");
     });
 </script>
+  <main>
   <section id="hero" class="hero">
-    <video id="hero-video" class="hero-video" autoplay muted loop playsinline poster="assets/images/hero-poster.jpg"></video>
+    <video id="hero-video" class="hero-video" muted loop playsinline preload="none" poster="assets/images/hero-poster.jpg"></video>
     <div class="hero-content">
       <!-- <span class="hero-kicker">Independent creative studio</span> -->
       <h1 data-bind="brand"></h1>
@@ -142,7 +147,7 @@
         <h2>About Me</h2>
       </header>
       <div class="about-grid">
-        <img data-bind="photo" alt="" class="about-photo">
+        <img data-bind="photo" alt="" class="about-photo" loading="lazy" decoding="async" width="750" height="1000">
         <div class="about-text">
           <h2 data-bind="name"></h2>
           <p data-bind="experience"></p>
@@ -172,7 +177,7 @@
       </header>
       <div class="reels-stage">
         <div class="reels-meta"><span>Featured edit</span><span>00:30</span></div>
-        <video class="reel-video" src="assets/videos/motion graphics.mp4" autoplay muted loop playsinline controls aria-label="Featured reel"></video>
+        <video class="reel-video" src="assets/videos/motion graphics.mp4" width="1920" height="1080" muted loop playsinline controls preload="none" poster="assets/posters/motion graphics.jpg" aria-label="Featured reel"></video>
         <div class="reels-mark" aria-hidden="true"></div>
       </div>
     </div>
@@ -215,6 +220,8 @@
       <div class="certificates-grid" id="certificates-grid"></div>
     </div>
   </section>
+
+  </main>
 
   <footer id="contact" class="footer">
     <div class="container">

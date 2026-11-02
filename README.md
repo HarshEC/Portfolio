@@ -111,10 +111,29 @@ Then open `http://localhost:8000` (or 5500 for Live Server).
 - `prefers-reduced-motion` respected for animations
 
 ## Performance Notes
-- Project videos lazy-load on click (thumbnail → embed)
-- Hero video uses YouTube's CDN
-- Images: add `loading="lazy"` (already in template)
+- Card thumbnails are static poster images (`assets/posters/`); **no video bytes are downloaded until a card is clicked**
+- Videos are web-optimised (H.264, `+faststart`, max 1280 px on the long edge)
+- The hero and showreel load only after first paint / when scrolled into view
+- Only one video plays at a time, and offscreen players are paused
+- Sections use `content-visibility: auto` to skip offscreen rendering
+- Images are lazy-loaded with explicit dimensions to prevent layout shift
 - No build step, no dependencies
+
+### Media manifest
+`data/media.json` maps each video to its poster and intrinsic size:
+
+```json
+{
+  "assets/videos/example.mp4": {
+    "poster": "assets/posters/example.jpg",
+    "width": 1920,
+    "height": 1080
+  }
+}
+```
+
+If the file is missing, posters are still resolved from the video path, so the
+site keeps working.
 
 ## Accessibility
 - Semantic HTML5 structure
