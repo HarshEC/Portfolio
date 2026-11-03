@@ -1,22 +1,6 @@
 {
   "categories": [
     {
-      "id": "trailer-promo",
-      "title": "Trailer & Promo",
-      "projects": [
-        {
-          "title": "Cinematic Trailer",
-          "videoSrc": "assets/videos/trailer.mp4",
-          "description": "Film/series trailer with act structure, sound design, and title lockup."
-        },
-        {
-          "title": "Trailer Edit (Alt Cut)",
-          "videoSrc": "assets/videos/trailer edit.mp4",
-          "description": "Alternate pace — faster cuts, music-driven rhythm, different narrative hook."
-        }
-      ]
-    },
-    {
       "id": "talking-head",
       "title": "Talking Head & Educational",
       "projects": [
@@ -38,27 +22,6 @@
       ]
     },
     {
-      "id": "storytelling",
-      "title": "Storytelling & Narrative",
-      "projects": [
-        {
-          "title": "Storytelling Edit",
-          "videoSrc": "assets/videos/storytelling.mp4",
-          "description": "Three-act short form: setup → conflict → resolution. J/L cuts, emotional pacing."
-        },
-        {
-          "title": "Storytelling Edit 2",
-          "videoSrc": "assets/videos/storytelling (2).mp4",
-          "description": "Non-linear narrative: cross-cutting timelines, visual motifs, color-coded threads."
-        },
-        {
-          "title": "Storytelling Edit 3",
-          "videoSrc": "assets/videos/storytelling (3).mp4",
-          "description": "Minimal dialogue — visual storytelling via shot sequencing, reactions, environment."
-        }
-      ]
-    },
-    {
       "id": "social-media",
       "title": "Social Media & Vertical Content",
       "projects": [
@@ -71,6 +34,22 @@
           "title": "Social Media Edit 2",
           "videoSrc": "assets/videos/social media (2).mp4",
           "description": "Second vertical variant: different hook style, caption zones, loop-friendly ending."
+        }
+      ]
+    },
+    {
+      "id": "ministry-government",
+      "title": "Ministry & Government Projects",
+      "projects": [
+        {
+          "title": "Ministry Project",
+          "videoSrc": "assets/videos/ministry.mp4",
+          "description": "Government scheme video: on-location B-roll, interviews, data graphics, bilingual titles."
+        },
+        {
+          "title": "Ministry Project 2",
+          "videoSrc": "assets/videos/ministry (2).mp4",
+          "description": "Second ministry deliverable: different scheme, same broadcast-standard workflow."
         }
       ]
     },
@@ -127,18 +106,39 @@
       ]
     },
     {
-      "id": "ministry-government",
-      "title": "Ministry & Government Projects",
+      "id": "storytelling",
+      "title": "Storytelling & Narrative",
       "projects": [
         {
-          "title": "Ministry Project",
-          "videoSrc": "assets/videos/ministry.mp4",
-          "description": "Government scheme video: on-location B-roll, interviews, data graphics, bilingual titles."
+          "title": "Storytelling Edit",
+          "videoSrc": "assets/videos/storytelling.mp4",
+          "description": "Three-act short form: setup → conflict → resolution. J/L cuts, emotional pacing."
         },
         {
-          "title": "Ministry Project 2",
-          "videoSrc": "assets/videos/ministry (2).mp4",
-          "description": "Second ministry deliverable: different scheme, same broadcast-standard workflow."
+          "title": "Storytelling Edit 2",
+          "videoSrc": "assets/videos/storytelling (2).mp4",
+          "description": "Non-linear narrative: cross-cutting timelines, visual motifs, color-coded threads."
+        },
+        {
+          "title": "Storytelling Edit 3",
+          "videoSrc": "assets/videos/storytelling (3).mp4",
+          "description": "Minimal dialogue — visual storytelling via shot sequencing, reactions, environment."
+        }
+      ]
+    },
+    {
+      "id": "trailer-promo",
+      "title": "Trailer & Promo",
+      "projects": [
+        {
+          "title": "Cinematic Trailer",
+          "videoSrc": "assets/videos/trailer.mp4",
+          "description": "Film/series trailer with act structure, sound design, and title lockup."
+        },
+        {
+          "title": "Trailer Edit (Alt Cut)",
+          "videoSrc": "assets/videos/trailer edit.mp4",
+          "description": "Alternate pace — faster cuts, music-driven rhythm, different narrative hook."
         }
       ]
     }

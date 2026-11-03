@@ -35,8 +35,9 @@
     },
 
     // A static poster keeps the page light: no video bytes are fetched until
-    // the visitor actually clicks a card. Explicit width/height avoids layout
-    // shift because the browser reserves space before the image arrives.
+    // the card approaches the viewport (or the visitor clicks it). Explicit
+    // width/height avoids layout shift because the browser reserves space
+    // before the image arrives.
     createPoster(videoSrc, alt, className) {
       const info = this.mediaInfo(videoSrc);
       const size = info && info.width && info.height
@@ -125,8 +126,8 @@
     },
 
     createSkillCard(s) {
-      // Static poster by default — the video itself is only mounted on click.
-      // This is what keeps ~1.4 GB of source footage off the initial load.
+      // Static poster by default — the video mounts just before it scrolls in,
+      // keeping the bulk of the source footage off the initial load.
       return `
         <article class="skill-card reveal" data-video-src="${s.videoSrc}" tabindex="0" role="button" aria-label="Play ${s.title}">
           <div class="skill-thumb">
@@ -145,27 +146,57 @@
 
     bindSkillCards() {
       document.querySelectorAll('.skill-card').forEach(card => {
-        const activate = () => {
-          const videoSrc = card.dataset.videoSrc;
-          if (videoSrc && !card.dataset.loaded) {
-            this.loadSkillVideoEmbed(card, videoSrc);
-          }
-        };
-        card.addEventListener('click', activate, { once: true });
-        card.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            activate();
-          }
-        });
+        this.bindVideoCard(card, () => this.loadSkillVideoEmbed(card, card.dataset.videoSrc));
       });
     },
 
-    // Replaces a card's poster with a real player. Called only on click, so the
-    // heavy video request starts exactly when the visitor asks for it.
-    mountVideo(card, videoSrc, { thumbSelector, videoClass, title }) {
-      this.pauseAllVideos(card);
+    bindProjectCards() {
+      document.querySelectorAll('.project-card').forEach(card => {
+        this.bindVideoCard(card, () => this.loadVideoEmbed(card, card.dataset.videoSrc));
+      });
+    },
 
+    // A card loads its video shortly before entering the viewport, so playback
+    // can start by itself as the visitor scrolls — no click required. Clicking
+    // still works and simply mounts immediately.
+    bindVideoCard(card, activate) {
+      const start = () => {
+        if (card.dataset.loaded) return;
+        if (card.dataset.videoSrc) activate();
+      };
+      card.addEventListener('click', start);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          start();
+        }
+      });
+      this.observeCard(card, start);
+    },
+
+    observeCard(card, start) {
+      if (!('IntersectionObserver' in window)) return;
+      if (!this.cardObserver) {
+        this.cardObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(entry.target);
+            if (entry.target.__startVideo) entry.target.__startVideo();
+          });
+        }, {
+          // Mount a little early so the first frame is ready by the time the
+          // card is actually on screen.
+          rootMargin: '400px 0px',
+          threshold: 0.01
+        });
+      }
+      card.__startVideo = start;
+      this.cardObserver.observe(card);
+    },
+
+    // Replaces a card's poster with a real player. Playback itself is driven
+    // by the scroll manager in main.js (one audible video at a time).
+    mountVideo(card, videoSrc, { thumbSelector, videoClass, title }) {
       const thumb = card.querySelector(thumbSelector);
       if (!thumb) return;
 
@@ -181,16 +212,13 @@
         video.height = info.height;
       }
       video.controls = true;
-      video.autoplay = true;
+      video.muted = false;
       video.playsInline = true;
       video.preload = 'auto';
       video.setAttribute('aria-label', title || 'Video player');
       thumb.appendChild(video);
       card.dataset.loaded = 'true';
       card.classList.remove('is-loading');
-
-      const playPromise = video.play();
-      if (playPromise && playPromise.catch) playPromise.catch(() => {});
 
       if (window.VideoScrollPlay && window.VideoScrollPlay.observeVideo) {
         window.VideoScrollPlay.observeVideo(video);
@@ -252,6 +280,7 @@
       if (panel) {
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      if (window.VideoScrollPlay) window.VideoScrollPlay.refresh();
     },
 
     // Keep the original project functions for backward compatibility
@@ -310,24 +339,6 @@
       `;
     },
 
-    bindProjectCards() {
-      document.querySelectorAll('.project-card').forEach(card => {
-        const activate = () => {
-          const videoSrc = card.dataset.videoSrc;
-          if (videoSrc && !card.dataset.loaded) {
-            this.loadVideoEmbed(card, videoSrc);
-          }
-        };
-        card.addEventListener('click', activate, { once: true });
-        card.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            activate();
-          }
-        });
-      });
-    },
-
     loadVideoEmbed(card, videoSrc) {
       card.classList.add('is-loading');
       this.mountVideo(card, videoSrc, {
@@ -356,6 +367,7 @@
       if (panel) {
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      if (window.VideoScrollPlay) window.VideoScrollPlay.refresh();
     },
 
     renderCertificates(data) {
@@ -405,7 +417,7 @@
         instagram: '<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
         linkedin: '<svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
         twitter: '<svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>',
-        whatsapp: '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.466-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.148-.669-1.611-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.077 4.487.709.306 1.263.489 1.694.625.712.227 1.36.194 1.871.18.255-.007.457-.13.61-.343.149-.198.198-.372.198-.57 0-.198-.088-.344-.273-.542-.472-.447-1.235-1.53-1.53-1.933a.994.994 0 0 1-.316-.568c-.115-.308.074-.758.343-1.088.348-.396.808-1.077 1.206-1.553.402-.482.597-.71.744-.9.149-.197.198-.371.173-.57-.026-.198-.2-.345-.422-.422-.308-.114-.616-.13-.793-.075-.173.05-.36.134-.542.242-.371.227-1.32.788-1.667 1.152-.274.287-.51.57-.75.826-.297.316-.59.633-.776.894-.199.287-.371.503-.496.673-.197.3-.358.635-.39.747-.033.114-.086.214-.13.316-.077.197-.198.371-.324.553-.149.21-.317.383-.522.522-.402.286-1.043.822-1.286 1.1-.243.275-.422.5-.57.673-.163.19-.316.382-.497.57-.181.188-.353.39-.497.57-.23.287-.52.684-.67.894-.3.375-.43.663-.54.92-.088.2-.158.37-.204.47-.046.099-.107.18-.18.273-.099.133-.22.23-.347.323-.23.173-.503.323-.73.422-.448.19-1.116.504-1.44.82-.297.297-.57.57-.82.82-.504.504-1.042 1.276-1.057 1.276-.15 0-.371-.17-.52-.343z" fill="currentColor"/></svg>'
+        whatsapp: '<svg viewBox="0 0 448 512" aria-hidden="true"><path fill="currentColor" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>'
       };
       return icons[platform.toLowerCase()] || '';
     }

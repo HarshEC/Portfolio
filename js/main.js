@@ -169,55 +169,149 @@
       updateProgress();
     },
 
-    // Auto-play/pause videos based on scroll visibility.
-    // Only hero + showreel exist on first load. Clicked project/skill players
-    // register themselves later through window.VideoScrollPlay.
+    // One video plays at a time: whichever player is most visible on screen.
+    // Scrolling to the next video pauses the previous one automatically, and
+    // every player that comes into view starts on its own with sound.
     initVideoScrollPlay() {
-      const videos = document.querySelectorAll('#hero-video, .reel-video');
-      if (!videos.length) return;
+      const videos = new Set();
+      const programmaticPause = new WeakSet();
+      let active = null;
+      let pausedByUser = null;
+      let soundUnlocked = false;
+      let ticking = false;
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          const video = entry.target;
-          const shouldPlay = entry.isIntersecting && entry.intersectionRatio >= 0.4;
+      const isSilent = (video) => video.id === 'hero-video';
 
-          if (shouldPlay) {
-            // Keep decoding to one video at a time. Pause any other autoplay
-            // video, but never touch a player the visitor controls manually.
-            document.querySelectorAll('video').forEach(other => {
-              if (other !== video && !other.paused && !other.controls) {
-                other.pause();
-              }
-            });
-            if (video.paused) {
-              const playPromise = video.play();
-              if (playPromise && playPromise.catch) playPromise.catch(() => {});
-            }
-          } else if (!video.paused && !video.controls) {
-            // Leaving the viewport: stop decoding, keep the position.
-            video.pause();
-          } else if (!entry.isIntersecting && !video.paused) {
-            // Offscreen user-controlled player: pause (preserve position).
-            video.pause();
-          }
-        });
-      }, {
-        rootMargin: '100px 0px',
-        threshold: [0, 0.4, 0.75]
-      });
-
-      const observeVideo = (video) => {
-        if (!video.controls) {
-          video.muted = true;
-          video.playsInline = true;
-        }
-        observer.observe(video);
+      const pauseNow = (video) => {
+        if (video.paused) return;
+        programmaticPause.add(video);
+        video.pause();
       };
 
-      videos.forEach(observeVideo);
+      // Autoplay with sound is blocked by browser policy until the visitor
+      // interacts with the page. Try unmuted first; if refused, start muted
+      // and unmute the active player as soon as any interaction happens.
+      const playVideo = (video) => {
+        if (isSilent(video)) video.muted = true;
+        else if (soundUnlocked) video.muted = false;
 
-      // Expose for dynamically added videos (project/skill cards on click).
-      window.VideoScrollPlay = { observeVideo, observer };
+        const attempt = video.play();
+        if (!attempt || !attempt.catch) return;
+
+        attempt.catch((err) => {
+          if (isSilent(video) || (err && err.name !== 'NotAllowedError')) return;
+          video.muted = true;
+          const retry = video.play();
+          if (retry && retry.catch) retry.catch(() => {});
+        });
+      };
+
+      const unlockSound = () => {
+        soundUnlocked = true;
+        if (active && !isSilent(active)) {
+          active.muted = false;
+          if (active.paused) playVideo(active);
+        }
+      };
+
+      const update = () => {
+        ticking = false;
+
+        const vh = window.innerHeight;
+        let best = null;
+        let bestScore = 0;
+        let bestCenter = Infinity;
+
+        videos.forEach((video) => {
+          if (!video.isConnected) {
+            videos.delete(video);
+            return;
+          }
+          const rect = video.getBoundingClientRect();
+          if (rect.height === 0 || rect.bottom <= 0 || rect.top >= vh) return;
+
+          const visible = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+          const score = visible / Math.min(rect.height, vh);
+          const center = Math.abs((rect.top + rect.bottom) / 2 - vh / 2);
+
+          // The most visible video wins; a near tie goes to the one closest
+          // to the middle of the screen.
+          if (score > bestScore + 0.05 || (Math.abs(score - bestScore) <= 0.05 && center < bestCenter)) {
+            best = video;
+            bestScore = score;
+            bestCenter = center;
+          }
+        });
+
+        if (bestScore < 0.5) best = null;
+
+        if (best === active) {
+          if (best && best.paused && best !== pausedByUser) playVideo(best);
+          return;
+        }
+
+        if (active && active !== best) {
+          pauseNow(active);
+          if (pausedByUser === active) pausedByUser = null;
+        }
+
+        active = best;
+
+        if (best) {
+          if (best !== pausedByUser) playVideo(best);
+        }
+      };
+
+      const scheduleUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(update);
+      };
+
+      const observeVideo = (video) => {
+        if (videos.has(video)) return;
+        video.playsInline = true;
+        if (isSilent(video)) video.muted = true;
+        videos.add(video);
+
+        // A visitor pressing native controls owns the pause state until they
+        // scroll away; our own pauses must not trigger that flag.
+        video.addEventListener('pause', () => {
+          if (programmaticPause.has(video)) {
+            programmaticPause.delete(video);
+            return;
+          }
+          if (video === active) pausedByUser = video;
+        });
+        video.addEventListener('play', () => {
+          if (pausedByUser === video) pausedByUser = null;
+          // A visitor pressing play on another card takes over; keep the
+          // one-video-at-a-time rule.
+          if (video !== active) {
+            videos.forEach((other) => {
+              if (other !== video) pauseNow(other);
+            });
+            active = video;
+          }
+        });
+
+        scheduleUpdate();
+      };
+
+      document.querySelectorAll('#hero-video, .reel-video').forEach(observeVideo);
+
+      window.addEventListener('scroll', scheduleUpdate, { passive: true });
+      window.addEventListener('resize', scheduleUpdate);
+      document.addEventListener('visibilitychange', scheduleUpdate);
+
+      // First interaction unlocks audible autoplay for this page.
+      ['pointerdown', 'touchstart', 'keydown'].forEach((type) => {
+        document.addEventListener(type, unlockSound, { capture: true, passive: true, once: true });
+      });
+
+      // Expose for videos mounted later (project/skill cards).
+      window.VideoScrollPlay = { observeVideo, refresh: scheduleUpdate };
+      update();
     }
   };
 
