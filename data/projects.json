@@ -5,6 +5,11 @@
       "title": "Motion Graphics & Animation",
       "projects": [
         {
+          "title": "SaaS Animation Final",
+          "videoSrc": "assets/videos/saas animation final.mp4",
+          "description": "SaaS product animation: UI mockups, kinetic type, feature callouts, and a clean logo lockup."
+        },
+        {
           "title": "Motion Graphics Reel",
           "videoSrc": "assets/videos/motion graphics.mp4",
           "description": "Kinetic typography, shape layers, procedural animation — pure motion design."
@@ -23,11 +28,6 @@
           "title": "Animation Showcase",
           "videoSrc": "assets/videos/animation.mp4",
           "description": "Character rigging, walk cycles, animation principles (squash/stretch, anticipation)."
-        },
-        {
-          "title": "SaaS Animation Final",
-          "videoSrc": "assets/videos/saas animation final.mp4",
-          "description": "SaaS product animation: UI mockups, kinetic type, feature callouts, and a clean logo lockup."
         }
       ]
     },

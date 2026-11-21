@@ -177,7 +177,12 @@
       </header>
       <div class="reels-stage">
         <div class="reels-meta"><span>Featured edit</span><span>00:30</span></div>
-        <video class="reel-video" src="assets/videos/motion graphics.mp4" width="1920" height="1080" loop playsinline controls preload="none" poster="assets/posters/motion graphics.jpg" aria-label="Featured reel"></video>
+        <video class="reel-video" src="assets/videos/motion graphics.mp4" width="1920" height="1080" loop autoplay playsinline preload="none" poster="assets/posters/motion graphics.jpg" aria-label="Featured reel"></video>
+        <div class="reel-controls" aria-label="Showreel playback controls">
+          <button type="button" class="reel-btn reel-btn-play-pause" aria-label="Play" aria-pressed="false">▶</button>
+          <button type="button" class="reel-btn reel-btn-stop" aria-label="Stop">■</button>
+          <button type="button" class="reel-btn reel-btn-sound" aria-label="Sound On" aria-pressed="true">🔊</button>
+        </div>
         <div class="reels-mark" aria-hidden="true"></div>
       </div>
     </div>

@@ -22,6 +22,7 @@
       this.initReelMedia();
       this.initReelFit();
       this.initVideoScrollPlay();
+      this.initReelControls();
     },
 
     // Apply the poster + intrinsic size to the showreel before any video bytes
@@ -310,8 +311,75 @@
       });
 
       // Expose for videos mounted later (project/skill cards).
-      window.VideoScrollPlay = { observeVideo, refresh: scheduleUpdate };
+      window.VideoScrollPlay = { observeVideo, refresh: scheduleUpdate, unlock: unlockSound };
       update();
+    },
+
+    // Custom playback controls for the Showreel: Play/Pause, Stop, Sound On/Off.
+    // Works with the scroll-play/sound-unlock flow so the reel autoplays with
+    // audio once the visitor has interacted with the page.
+    initReelControls() {
+      const video = document.querySelector('.reel-video');
+      const controls = document.querySelector('.reel-controls');
+      if (!video || !controls) return;
+
+      const btnPlay = controls.querySelector('.reel-btn-play-pause');
+      const btnStop = controls.querySelector('.reel-btn-stop');
+      const btnSound = controls.querySelector('.reel-btn-sound');
+
+      const updateButtons = () => {
+        const playing = !video.paused && !video.ended;
+        if (btnPlay) {
+          btnPlay.textContent = playing ? '⏸' : '▶';
+          btnPlay.setAttribute('aria-pressed', String(playing));
+          btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+        }
+        if (btnSound) {
+          const muted = video.muted;
+          btnSound.textContent = muted ? '🔇' : '🔊';
+          btnSound.setAttribute('aria-pressed', String(!muted));
+          btnSound.setAttribute('aria-label', muted ? 'Sound Off' : 'Sound On');
+        }
+      };
+
+      const sync = () => updateButtons();
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      video.addEventListener('ended', () => {
+        if (btnPlay) {
+          btnPlay.textContent = '▶';
+          btnPlay.setAttribute('aria-pressed', 'false');
+          btnPlay.setAttribute('aria-label', 'Play');
+        }
+      });
+      video.addEventListener('volumechange', sync);
+
+      if (btnPlay) {
+        btnPlay.addEventListener('click', () => {
+          if (video.paused || video.ended) video.play();
+          else video.pause();
+        });
+      }
+
+      if (btnStop) {
+        btnStop.addEventListener('click', () => {
+          video.pause();
+          video.currentTime = 0;
+          updateButtons();
+        });
+      }
+
+      if (btnSound) {
+        btnSound.addEventListener('click', () => {
+          video.muted = !video.muted;
+          if (!video.muted && window.VideoScrollPlay && window.VideoScrollPlay.unlock) {
+            window.VideoScrollPlay.unlock();
+          }
+          updateButtons();
+        });
+      }
+
+      updateButtons();
     }
   };
 
