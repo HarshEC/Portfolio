@@ -49,6 +49,11 @@
                                          "width":  1080,
                                          "height":  1920
                                      },
+    "assets/videos/saas animation final.mp4":  {
+                                                    "poster":  "assets/posters/saas animation final.jpg",
+                                                    "width":  1280,
+                                                    "height":  720
+                                                },
     "assets/videos/social media (2).mp4":  {
                                                "poster":  "assets/posters/social media (2).jpg",
                                                "width":  2160,

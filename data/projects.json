@@ -1,6 +1,37 @@
 {
   "categories": [
     {
+      "id": "motion-graphics",
+      "title": "Motion Graphics & Animation",
+      "projects": [
+        {
+          "title": "Motion Graphics Reel",
+          "videoSrc": "assets/videos/motion graphics.mp4",
+          "description": "Kinetic typography, shape layers, procedural animation — pure motion design."
+        },
+        {
+          "title": "Motion Graphics 2",
+          "videoSrc": "assets/videos/motion graphics (2).mp4",
+          "description": "3D camera moves, particle systems, expressions-driven animation."
+        },
+        {
+          "title": "Logo Animation",
+          "videoSrc": "assets/videos/logo animation.mp4",
+          "description": "Brand mark reveal: morphing shapes, particle bursts, sound-synced keyframes."
+        },
+        {
+          "title": "Animation Showcase",
+          "videoSrc": "assets/videos/animation.mp4",
+          "description": "Character rigging, walk cycles, animation principles (squash/stretch, anticipation)."
+        },
+        {
+          "title": "SaaS Animation Final",
+          "videoSrc": "assets/videos/saas animation final.mp4",
+          "description": "SaaS product animation: UI mockups, kinetic type, feature callouts, and a clean logo lockup."
+        }
+      ]
+    },
+    {
       "id": "talking-head",
       "title": "Talking Head & Educational",
       "projects": [
@@ -76,32 +107,6 @@
           "title": "Real Estate Legacy Cut",
           "videoSrc": "assets/videos/realeastet.mp4",
           "description": "Earlier edit with different music bed and pacing structure."
-        }
-      ]
-    },
-    {
-      "id": "motion-graphics",
-      "title": "Motion Graphics & Animation",
-      "projects": [
-        {
-          "title": "Motion Graphics Reel",
-          "videoSrc": "assets/videos/motion graphics.mp4",
-          "description": "Kinetic typography, shape layers, procedural animation — pure motion design."
-        },
-        {
-          "title": "Motion Graphics 2",
-          "videoSrc": "assets/videos/motion graphics (2).mp4",
-          "description": "3D camera moves, particle systems, expressions-driven animation."
-        },
-        {
-          "title": "Logo Animation",
-          "videoSrc": "assets/videos/logo animation.mp4",
-          "description": "Brand mark reveal: morphing shapes, particle bursts, sound-synced keyframes."
-        },
-        {
-          "title": "Animation Showcase",
-          "videoSrc": "assets/videos/animation.mp4",
-          "description": "Character rigging, walk cycles, animation principles (squash/stretch, anticipation)."
         }
       ]
     },
